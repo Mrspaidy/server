@@ -1,48 +1,24 @@
-// server.js
-
-// Disable ytdl-core auto update check
-process.env.YTDL_NO_UPDATE = 'true';
-
-// Import packages
 const express = require('express');
-const cors = require('cors');
 const ytdl = require('ytdl-core');
+const cors = require('cors');
 
-// Initialize app
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
-// Enable CORS
 app.use(cors());
 
-// Routes
-
-// Test route
-app.get('/', (req, res) => {
-  res.send('YouTube Video Downloader API is running ✅');
-});
-
-// Download route
 app.get('/download', async (req, res) => {
   const videoURL = req.query.url;
-
-  if (!videoURL) {
-    return res.status(400).json({ error: 'Missing URL' });
+  if (!ytdl.validateURL(videoURL)) {
+    return res.status(400).send('Invalid YouTube URL');
   }
+  
+  const info = await ytdl.getInfo(videoURL);
+  res.header('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
 
-  try {
-    const info = await ytdl.getInfo(videoURL);
-    const format = ytdl.chooseFormat(info.formats, { quality: 'highestvideo' });
-
-    res.header('Content-Disposition', `attachment; filename="video.mp4"`);
-    ytdl(videoURL, { format: format }).pipe(res);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Failed to download video' });
-  }
+  ytdl(videoURL, { format: 'mp4' }).pipe(res);
 });
 
-// Start server
 app.listen(PORT, () => {
-  console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
