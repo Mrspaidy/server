@@ -1,17 +1,16 @@
 {
-    "name": "youtube-downloader",
-    "version": "1.0.0",
-    "description": "Simple YouTube video downloader",
-    "main": "server.js",
-    "scripts": {
-      "start": "node server.js"
-    },
-     "dependencies": {
-     "express": "^4.18.2",
-     "ytdl-core": "^4.11.6",
-     "cors": "^2.8.5"
-    }
-     "engines": {
-     "node": "18.x"
-    }
+  "name": "yt-downloader-server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "ytdl-core": "^4.11.6"
   }
+}
