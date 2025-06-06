@@ -1,40 +1,19 @@
-const express = require('express');
 const ytdl = require('ytdl-core');
-const cors = require('cors');
-const app = express();
-const port = process.env.PORT || 3000;
-
-app.use(cors({
-    origin: ['https://www.darkavengers.in/p/youtube-video-downloader_6.html'] // Replace with your Blogger domain
-}));
-app.use(express.json());
-
-app.post('/download', async (req, res) => {
-    const { url } = req.body;
-
-    if (!ytdl.validateURL(url)) {
-        return res.status(400).send('Invalid YouTube URL');
-    }
-
-    try {
-        const info = await ytdl.getInfo(url);
-        const format = ytdl.chooseFormat(info.formats, { quality: 'highestvideo' });
-
-        res.setHeader('Content-Disposition', `attachment; filename="${info.videoDetails.title}.mp4"`);
-        res.setHeader('Content-Type', 'video/mp4');
-
-        ytdl(url, { format })
-            .pipe(res)
-            .on('error', (err) => {
-                console.error(err);
-                res.status(500).send('Error downloading video');
-            });
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Error processing video');
-    }
-});
-
-app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+const fs = require('fs');
+const videoId = 'ENTER_YOUTUBE_VIDEO_ID_OR_URL_HERE';
+// Get video info from YouTube
+ytdl.getInfo(videoId).then((info) => {
+  // Select the video format and quality
+  const format = ytdl.chooseFormat(info.formats,{quality:"248"});
+  // Create a write stream to save the video file
+  const outputFilePath = `${info.videoDetails.title}.${videoFormat.container}`;
+  const outputStream = fs.createWriteStream(outputFilePath);
+  // Download the video file
+  ytdl.downloadFromInfo(info, { format: format }).pipe(outputStream);
+  // When the download is complete, show a message
+  outputStream.on('finish', () => {
+    console.log(`Finished downloading: ${outputFilePath}`);
+  });
+}).catch((err) => {
+  console.error(err);
 });
