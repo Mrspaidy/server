@@ -5,7 +5,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-    origin: ['https://www.darkavengers.in/'] // Replace with your Blogger domain
+    origin: ['https://www.darkavengers.in/p/youtube-video-downloader_6.html'] // Replace with your Blogger domain
 }));
 app.use(express.json());
 
